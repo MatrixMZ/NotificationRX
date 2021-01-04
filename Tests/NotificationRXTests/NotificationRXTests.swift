@@ -1,15 +1,24 @@
 import XCTest
+import SwiftUI
 @testable import NotificationRX
 
 final class NotificationRXTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(NotificationRX().text, "Hello, World!")
+    @State var notifications: [RXNotification] = []
+    var sut: RXNotifier!
+
+    override func setUp() {
+        super.setUp()
+        
+        sut = RXNotifier($notifications)
     }
 
-    static var allTests = [
-        ("testExample", testExample),
-    ]
+    override func tearDown() {
+        notifications = []
+        super.tearDown()
+    }
+
+    func testAddNewNotifcation() {
+        notifications.append(RXNotification(.info, .init("Title", "Description")))
+    }
 }
+
