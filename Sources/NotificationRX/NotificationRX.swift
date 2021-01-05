@@ -79,7 +79,7 @@ public struct RXNotification: Equatable {
         let title: String
         let desctiption: String
 
-        init(_ title: String, _ description: String) {
+        public init(_ title: String, _ description: String) {
             self.title = title
             self.desctiption = description
         }
