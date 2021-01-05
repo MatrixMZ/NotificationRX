@@ -44,8 +44,8 @@ public final class RXNotifier: ObservableObject {
 public struct RXNotifierView: View {
     @ObservedObject public var notifier: RXNotifier
     
-    public init(_ notifier: ObservedObject<RXNotifier>) {
-        _notifier = notifier
+    public init(_ notifier: RXNotifier) {
+        self.notifier = notifier
     }
     
     public var body: some View {
