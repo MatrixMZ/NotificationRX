@@ -44,6 +44,10 @@ public final class RXNotifier: ObservableObject {
 public struct RXNotifierView: View {
     @ObservedObject public var notifier: RXNotifier
     
+    public init(_ notifier: ObservedObject<RXNotifier>) {
+        _notifier = notifier
+    }
+    
     public var body: some View {
         VStack {
             if let notification = notifier.current {
@@ -76,8 +80,8 @@ public struct RXNotification: Equatable {
     }
 
     public struct Content {
-        let title: String
-        let desctiption: String
+        public let title: String
+        public let desctiption: String
 
         public init(_ title: String, _ description: String) {
             self.title = title
