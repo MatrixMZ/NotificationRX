@@ -9,7 +9,9 @@ final class NotificationRXTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        sut = RXNotifier($notifications)
+        sut = RXNotifier($notifications) { id in
+            print(id)
+        }
     }
 
     override func tearDown() {
@@ -21,4 +23,3 @@ final class NotificationRXTests: XCTestCase {
         notifications.append(RXNotification(.info, .init("Title", "Description")))
     }
 }
-

@@ -1,19 +1,64 @@
 import SwiftUI
 
-
-struct RXNotifier: View {
-    @Binding var notifications: [RXNotification]
+/// `RXNotifier` is  a type of `ObservableObject` and should be used globally as `@EnvironmentObject`.
+/// It allows to dispatch notifications and by storing them in queue.
+///
+/// - Parameter timeout: Time after notification should be destroyed. Default: 2
+///
+final class RXNotifier: ObservableObject {
+    private var queue: [RXNotification] = []
+    @Published var current: RXNotification? = nil
     
-    init(_ notifications: Binding<[RXNotification]>) {
-        self._notifications = notifications
+    let timeout: Double
+
+    
+    init(_ timeout: Double = 2) {
+        self.timeout = timeout
     }
+    
+    func dispatch(_ notification: RXNotification) {
+        queue.append(notification)
+        if current == nil, let next = queue.first{
+            launchNotification(next)
+        }
+        
+    }
+    
+    private func onCompletetion() {
+        queue.removeFirst()
+        if let next = queue.first {
+            launchNotification(next)
+        } else {
+            current = nil
+        }
+    }
+    
+    private func launchNotification(_ notification: RXNotification) {
+        current = notification
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
+            self.onCompletetion()
+        }
+    }
+}
+
+struct RXNotifierView: View {
+    @ObservedObject var notifier: RXNotifier
     
     var body: some View {
         VStack {
-            
-        }
-        .onChange(of: notifications) { value in
-            
+            if let notification = notifier.current {
+                HStack {
+                    Image(systemName: notification.type.rawValue)
+                        .imageScale(.large)
+                    Text(notification.content.title)
+                    Spacer()
+                }
+                .padding()
+                .background(Color.white)
+                .foregroundColor(.black)
+                .cornerRadius(10)
+                .transition(AnyTransition.opacity.combined(with: .move(edge: .top)).combined(with: .scale))
+            }
         }
     }
 }
@@ -23,11 +68,11 @@ struct RXNotification: Equatable {
     let type: NotificationType
     let content: Content
     
-    enum NotificationType {
-        case info
-        case success
-        case warning
-        case error
+    enum NotificationType: String {
+        case info = "info.circle"
+        case success = "checkmark.circle"
+        case warning = "exclamationmark.circle"
+        case error = "xmark.circle"
     }
 
     struct Content {
@@ -50,63 +95,3 @@ struct RXNotification: Equatable {
         return lhs.id == rhs.id
     }
 }
-
-//struct RXNotification: View {
-//    let type: NotificationType
-//    let content: Content
-//    @State private var visible: Bool = true
-//
-//    init(_ type: NotificationType = .info, _ content: Content) {
-//        self.type = type
-//        self.content = content
-//    }
-//
-//    enum NotificationType {
-//        case info
-//        case success
-//        case warning
-//        case error
-//    }
-//
-//    struct Content {
-//        let title: String
-//        let desctiption: String
-//
-//        init(_ title: String, _ description: String) {
-//            self.title = title
-//            self.desctiption = description
-//        }
-//    }
-//
-//
-//    var body: some View {
-//        VStack {
-//            if visible {
-//                HStack {
-//                    Image(systemName: "checkmark.circle")
-//                    Text("Product saved in cart")
-//                    Spacer()
-//                }
-//                .padding()
-//                .background(Color.gray)
-//                .cornerRadius(10)
-//                .transition(.asymmetric(insertion: .slide, removal: .slide))
-//            }
-//
-//            Spacer()
-//
-//            Button(visible ? "Hide" : "Show") {
-//                withAnimation {
-//                    visible.toggle()
-//                }
-//            }
-//        }
-//        .padding()
-//    }
-//}
-
-//struct NWSNotification_Previews: PreviewProvider {
-//    static var previews: some View {
-//        RXNotification(.info, .init("", ""))
-//    }
-//}
