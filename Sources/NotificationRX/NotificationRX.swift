@@ -5,7 +5,7 @@ import SwiftUI
 ///
 /// - Parameter timeout: Time after notification should be destroyed. Default: 2
 ///
-final class RXNotifier: ObservableObject {
+public final class RXNotifier: ObservableObject {
     private var queue: [RXNotification] = []
     @Published var current: RXNotification? = nil
     
@@ -41,10 +41,10 @@ final class RXNotifier: ObservableObject {
     }
 }
 
-struct RXNotifierView: View {
+public struct RXNotifierView: View {
     @ObservedObject var notifier: RXNotifier
     
-    var body: some View {
+    public var body: some View {
         VStack {
             if let notification = notifier.current {
                 HStack {
@@ -63,7 +63,7 @@ struct RXNotifierView: View {
     }
 }
 
-struct RXNotification: Equatable {
+public struct RXNotification: Equatable {
     let id: UUID
     let type: NotificationType
     let content: Content
@@ -91,7 +91,7 @@ struct RXNotification: Equatable {
         self.content = content
     }
     
-    static func == (lhs: RXNotification, rhs: RXNotification) -> Bool {
+    public static func == (lhs: RXNotification, rhs: RXNotification) -> Bool {
         return lhs.id == rhs.id
     }
 }
