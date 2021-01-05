@@ -42,7 +42,7 @@ public final class RXNotifier: ObservableObject {
 }
 
 public struct RXNotifierView: View {
-    @ObservedObject var notifier: RXNotifier
+    @ObservedObject public var notifier: RXNotifier
     
     public var body: some View {
         VStack {
@@ -64,9 +64,9 @@ public struct RXNotifierView: View {
 }
 
 public struct RXNotification: Equatable {
-    let id: UUID
-    let type: NotificationType
-    let content: Content
+    public let id: UUID
+    public let type: NotificationType
+    public let content: Content
     
     public enum NotificationType: String {
         case info = "info.circle"
