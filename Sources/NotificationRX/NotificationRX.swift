@@ -7,16 +7,16 @@ import SwiftUI
 ///
 public final class RXNotifier: ObservableObject {
     private var queue: [RXNotification] = []
-    @Published var current: RXNotification? = nil
+    @Published public var current: RXNotification? = nil
     
-    let timeout: Double
+    private let timeout: Double
 
     
-    init(_ timeout: Double = 2) {
+    public init(_ timeout: Double = 2) {
         self.timeout = timeout
     }
     
-    func dispatch(_ notification: RXNotification) {
+    public func dispatch(_ notification: RXNotification) {
         queue.append(notification)
         if current == nil, let next = queue.first{
             launchNotification(next)
@@ -68,14 +68,14 @@ public struct RXNotification: Equatable {
     let type: NotificationType
     let content: Content
     
-    enum NotificationType: String {
+    public enum NotificationType: String {
         case info = "info.circle"
         case success = "checkmark.circle"
         case warning = "exclamationmark.circle"
         case error = "xmark.circle"
     }
 
-    struct Content {
+    public struct Content {
         let title: String
         let desctiption: String
 
@@ -85,7 +85,7 @@ public struct RXNotification: Equatable {
         }
     }
     
-    init(_ type: NotificationType = .info, _ content: Content) {
+    public init(_ type: NotificationType = .info, _ content: Content) {
         self.id = UUID()
         self.type = type
         self.content = content
